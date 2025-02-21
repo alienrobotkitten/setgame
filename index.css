@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Scribble&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amarante&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Glass+Antiqua&display=swap');
+/* theme */
+
+* {
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+   --purple: purple;
+   --green: green;
+   --red: red;
+   --background-color: rgba(39, 139, 61, 0.373);
+   --text-color: darkslategray;
+}
+
+body {
+   font-family: 'Georgia', 'Times', 'Source Serif Pro', serif;
+   color: var(--text-color);
+   background-color: var(--background-color);
+   font-size: 1.2rem;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   height: 100dvh;
+}
+
+header {
+   align-items: center;
+   margin: 0;
+   background-color: purple;
+   box-shadow: 0 2px 5px rgb(0, 0, 0);
+   padding-bottom: 0;
+}
+
+main {
+   padding: 1rem 1.5rem;
+   width: min(768px,100%);
+   margin: 0 auto;
+}
+
+.title  {
+   padding: 0.1rem 0  0 1.5rem;
+   font-family: "Amarante", serif;
+   color: whitesmoke;
+   width: min(768px,100%);
+   margin: 0 auto;
+   display: flex;
+   align-items: top;
+   justify-content: center;
+}
+
+.title-s {
+   /* border: 1px solid red; */
+   display: inline-block;
+   font-size: 4rem;
+   letter-spacing: 0.11em;
+   margin-bottom: 0;
+}
+
+.title-et {
+   /* border: 1px solid green; */
+   display: inline-block;
+   font-size: 2.7rem;
+   letter-spacing: 0.2em;
+   padding-top: 0.3rem;
+   margin-bottom: 0;
+}
+
+a {
+   color: chocolate;
+}
+
+a:focus,
+a:active,
+a:hover {
+   color: chocolate;
+   opacity: 0.9;
+}
+
+/* game specific */
+
+#card-container {
+   height: calc(100dvh - 10rem); /* Adjust height to fit between header and footer */
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-template-rows: repeat(4, 1fr);
+   padding: 1rem;
+   justify-content: center;
+   align-items: center;
+   padding: 0;
+   margin: 0;
+}
+
+.card {
+   border-radius: 5px;
+   background-color: whitesmoke;
+   box-shadow: 0px 0px 2px darkslateblue;
+   font-size: 2rem;
+   display: flex;
+   justify-self: center;
+   align-self: center;
+   height: 18vh;
+   aspect-ratio: 5/7;
+   margin: 0;
+   display: flex  ;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   gap: 0.3rem;
+}
+
+.red {
+   color: var(--red);
+}
+.green {
+   color: var(--green);
+}
+.purple {
+   color: var(--purple);
+}
+
+
+/* footer */
+
+footer {
+   vertical-align: bottom;
+   padding-bottom: 1vh;
+   padding-left: 2vw;
+   padding-right: 1vw;
+}
+
+#created-by {
+   opacity: 0.8;
+   font-size: 0.7rem;
+   position: relative;
+   display: flex;
+   justify-content: space-between;
+   align-items: end;
+}
+
+#created-by p {
+   margin-bottom: 0.2rem
+}
+
+#logo {
+   vertical-align: bottom;
+   height: 2rem;
+   font-size: 0.7rem;
+}
