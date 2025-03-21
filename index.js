@@ -29,9 +29,13 @@ renderPage();
 
 function deal(amount) {
   console.log("Dealing...")
+  if (!cardsOnTable) {
+    cardsOnTable = [];
+  }
   for (let i = 0; i < amount; i++) {
     cardsOnTable.push(drawCard())
   }
+  console.log("Dealing done.")
 }
 
 function save() {
@@ -44,18 +48,28 @@ function save() {
 }
 
 function load() {
-  console.log("Loading...")
-  score = parseInt(localStorage.getItem("score")) || 0
-  console.log("Score", score);
-  highscore = parseInt(localStorage.getItem("highscore")) || score
-  console.log("High score", highscore)
-  selected = JSON.parse(localStorage.getItem("selected")) || []
-  console.log("Selected", selected);
-  cards = JSON.parse(localStorage.getItem("cards")) || createDeck()
-  console.log("cards", cards);
-  cardsOnTable = JSON.parse(localStorage.getItem("cardsOnTable")) || deal()
-  console.log(cardsOnTable);
-  console.log("Loading done.")
+  try {
+    console.log("Loading...")
+    score = parseInt(localStorage.getItem("score")) || 0
+    console.log("Score", score);
+    highscore = parseInt(localStorage.getItem("highscore")) || score
+    console.log("High score", highscore)
+    selected = JSON.parse(localStorage.getItem("selected")) || []
+    console.log("Selected", selected);
+    cards = JSON.parse(localStorage.getItem("cards")) || createDeck()
+    console.log("cards", cards);
+    cardsOnTable = JSON.parse(localStorage.getItem("cardsOnTable"))
+    if (!cardsOnTable) {
+      deal(12)
+    }
+    console.log(cardsOnTable);
+    console.log("Loading done.")
+  } catch {
+    console.log("save data corrupted, resetting...")
+    reset()
+    console.log("Reset done.")
+    save();
+  }
 }
 
 /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
@@ -67,13 +81,16 @@ function toggleMenu() {
   x.classList.toggle("open");
 }
 
-document.getElementById("new-game").addEventListener("click", function () {
-  toggleMenu();
+function reset() {
+  cards = createDeck();
   score = 0;
   selected = [];
-  cards = createDeck();
   cardsOnTable = [];
   deal(12);
+}
+
+document.getElementById("new-game").addEventListener("click", function () {
+  toggleMenu();
   save();
   renderPage();
 });
@@ -225,13 +242,14 @@ function allDifferent(card1, card2, card3) {
 
 
 function drawCard() {
-  const newCard = cards.shift();
-  console.log(cards.length)
-  return newCard;
+  if (cards && cards.length > 0) {
+    const newCard = cards.shift();
+    return newCard;
+  }
 }
 
 function createDeck() {
-  let cards = []
+  let cards = [];
   let index = 0;
   for (let i of amount) {
     for (let color of colors) {
