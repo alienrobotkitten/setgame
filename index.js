@@ -27,22 +27,11 @@ let highscore;
 load();
 renderPage();
 
-function deal() {
+function deal(amount) {
   console.log("Dealing...")
-  return {
-    0: drawCard(),
-    1: drawCard(),
-    2: drawCard(),
-    3: drawCard(),
-    4: drawCard(),
-    5: drawCard(),
-    6: drawCard(),
-    7: drawCard(),
-    8: drawCard(),
-    9: drawCard(),
-    10: drawCard(),
-    11: drawCard()
-  };
+  for (let i = 0; i < amount; i++) {
+    cardsOnTable.push(drawCard())
+  }
 }
 
 function save() {
@@ -69,19 +58,36 @@ function load() {
   console.log("Loading done.")
 }
 
-function reset() {
+/* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
+document.getElementById("menu-button").addEventListener("click", toggleMenu);
+
+function toggleMenu() {
+  console.log("menyklick")
+  let x = document.getElementById("menu");
+  x.classList.toggle("open");
+}
+
+document.getElementById("new-game").addEventListener("click", function () {
+  toggleMenu();
   score = 0;
   selected = [];
   cards = createDeck();
-  cardsOnTable = deal();
+  cardsOnTable = [];
+  deal(12);
   save();
   renderPage();
-}
+});
+
+document.getElementById("deal-more").addEventListener("click", function () {
+  toggleMenu();
+  deal(3);
+  renderPage();
+});
 
 function renderPage() {
   let html = "";
-  for (let [key, value] of Object.entries(cardsOnTable)) {
-    html += renderCard(value, key);
+  for (let [_, value] of Object.entries(cardsOnTable)) {
+    html += renderCard(value);
   }
   document.getElementById("card-container").innerHTML = html
 
@@ -96,32 +102,37 @@ function renderPage() {
 
   document.getElementById("score").innerText = score;
   document.getElementById("highscore").innerText = highscore;
-  document.getElementById("amount_sets").innerText = calculateSets();
+  document.getElementById("amount_sets").innerText = findAllSets();
   document.getElementById("amount_cards").innerText = cards.length;
 }
 
-function calculateSets() {
+function findAllSets() {
   let foundSets = 0;
-  for (let i = 0; i < 12; i++) {
-    for (let j = i + 1; j < 12; j++) {
-      for (let k = j + 1; k < 12; k++) {
+  const availableCards = cardsOnTable.length;
+  console.log("Finding all possible sets...")
+  for (let i = 0; i < availableCards; i++) {
+    for (let j = i + 1; j < availableCards; j++) {
+      for (let k = j + 1; k < availableCards; k++) {
         if (i != j && j != k) {
           if (isSet(cardsOnTable[i],
             cardsOnTable[j],
             cardsOnTable[k])) {
-            foundSets++
+            foundSets++;
+            console.log(i, j, k)
           }
         }
       }
     }
   }
+  console.log(`${foundSets} possible sets.`)
   return foundSets;
 }
-
 
 function clickHandler(e) {
   const id = e.target.id || e.target.parentElement.id
   console.log(id)
+  const currentCard = cardsOnTable.filter(item => item.id == id)[0]
+  console.log(currentCard)
   if (!selected.includes(id)) {
     document.getElementById(id).classList.add("selected");
     selected.push(id);
@@ -131,13 +142,14 @@ function clickHandler(e) {
   }
   console.log(selected)
   save();
+  renderPage();
   if (selected.length == 3) {
     const id0 = selected[0]
     const id1 = selected[1]
     const id2 = selected[2]
-    const card1 = cardsOnTable[id0]
-    const card2 = cardsOnTable[id1]
-    const card3 = cardsOnTable[id2]
+    const card1 = cardsOnTable.filter(card => card.id == id0)[0]
+    const card2 = cardsOnTable.filter(card => card.id == id1)[0]
+    const card3 = cardsOnTable.filter(card => card.id == id2)[0]
     if (isSet(card1, card2, card3)) {
       console.log("Set!")
       score++;
@@ -153,11 +165,11 @@ function clickHandler(e) {
       document.getElementById(id2).classList.add("right")
       setTimeout(() => {
         selected = []
-        if (cards.length > 0) {
-
-          cardsOnTable[id0] = drawCard()
-          cardsOnTable[id1] = drawCard()
-          cardsOnTable[id2] = drawCard()
+        cardsOnTable.splice(cardsOnTable.indexOf(card1), 1)
+        cardsOnTable.splice(cardsOnTable.indexOf(card2), 1)
+        cardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
+        if (cards.length > 0 && cardsOnTable.length < 12) {
+          deal(3);
         }
         save();
         renderPage();
@@ -220,17 +232,20 @@ function drawCard() {
 
 function createDeck() {
   let cards = []
+  let index = 0;
   for (let i of amount) {
     for (let color of colors) {
       for (let fill of fills) {
         for (let key in symbols) {
           cards.push({
+            id: index,
             amount: i,
             color: color,
             symbol: key,
             fill: fill,
             symbolsArray: symbols[key],
           });
+          index++;
         }
       }
     }
@@ -249,9 +264,9 @@ function shuffle(cardsArray) {
   }
 }
 
-function renderCard(card, index) {
+function renderCard(card) {
   return `<button class="card ${card.color}"
-    id=${index}
+    id=${card.id}
     data-symbol=${card.symbol} 
     data-amount=${card.amount}
     data-fill=${card.fill}
@@ -260,3 +275,4 @@ function renderCard(card, index) {
       ${card.symbolsArray[card.fill].repeat(card.amount)}
     </button>`;
 }
+

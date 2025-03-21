@@ -1,6 +1,6 @@
 {
-  "name": "Chord Picker",
-  "short_name": "ChordPick",
+  "name": "Kombo",
+  "short_name": "Kombo",
   "icons": [
     {
       "src": "/favicons/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#fffacd",
-  "background_color": "#d2691e",
+  "theme_color": "#f5f5f5",
+  "background_color": "#278b3d5f",
   "display": "standalone"
 }
