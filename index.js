@@ -25,6 +25,7 @@ let selected;
 let score;
 let highscore;
 load();
+save();
 renderPage();
 
 function deal(amount) {
@@ -68,7 +69,6 @@ function load() {
     console.log("save data corrupted, resetting...")
     reset()
     console.log("Reset done.")
-    save();
   }
 }
 
@@ -91,6 +91,7 @@ function reset() {
 
 document.getElementById("new-game").addEventListener("click", function () {
   toggleMenu();
+  reset();
   save();
   renderPage();
 });

@@ -1,17 +1,23 @@
+nav {
+   position: relative;
+}
+
 #menu-button {
    background-color: transparent;
    color: whitesmoke;
    border: 0;
-   width: 40px;
-   height: 40px;
+   width: 2em;
+   align-self: flex-start;
+   margin: 1vw 0.5vw 0 0;
    display: block;
    cursor: pointer;
    z-index: 10;
+   position: absolute;
 }
 
-nav {
+#menu {
    overflow: hidden;
-   z-index: 1;
+   z-index: 3;
    display: flex;
    flex-direction: column;
    position: absolute;
@@ -19,18 +25,18 @@ nav {
    left: -500px;
    background-color: black;
    width: min(130px, 30dvw);
-   height: 100%;
+   height: 100vh;
    padding-top: 50px;
    box-shadow: 0 0 2px black;
    transition: all 0.5s ease-in-out allow-discrete;
 }
 
-.open {
+#menu.open {
    left: 0;
 }
 
 /* Style navigation menu links */
-nav li {
+#menu li {
    color: white;
    padding: 14px 16px;
    text-decoration: none;
@@ -40,13 +46,13 @@ nav li {
 }
 
 /* Add a grey background color on mouse-over */
-nav li:hover {
+#menu li:hover {
    background-color: #ddd;
    color: black;
 }
 
 /* Style the active link (or home/logo) */
-nav .active {
+#menu .active {
    background-color: #04AA6D;
    color: white;
 }

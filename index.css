@@ -22,7 +22,7 @@ html {
    margin: auto;
    overflow: hidden;
    position: relative;
-   width: max(475px, 100dvw);
+   width: 100dvw;
    height: 100%;
 }
 
@@ -52,13 +52,15 @@ header {
 .display-right {
    display: flex;
    flex-direction: row;
+   gap: 0.2em;
    margin-top: 0.3em;
    margin-bottom: 0.4em;
+   font-size: 1rem;
 }
 
 .display-left {
    justify-content: flex-start;
-   margin-left: 0.5em;
+   margin-left: calc(2em);
 }
 
 .display-right {
@@ -71,12 +73,35 @@ header {
    display: flex;
    flex-direction: column;
    justify-content: end;
-   width: 4em;
+   width: min-content;
 }
 
 .score-display {
    font-size: 2rem;
    margin: 0;
+}
+
+@media (max-width: 400px) {
+   .display {
+      /* display: flex;
+      flex-direction: row; */
+      font-size: 0.5rem;
+      gap: 0.2em;
+   }
+
+   .score-display {
+      font-size: 1rem;
+   }
+
+   .display-left {
+      margin-left: 0.5em;
+   }
+
+   .display-left,
+   .display-right {
+      /* flex-direction: column; */
+      align-items: end;
+   }
 }
 
 .title {
@@ -146,6 +171,7 @@ a:hover {
    justify-self: center;
    align-self: center;
    height: 18vh;
+   /* width: 20vw; */
    aspect-ratio: 5/7;
    margin: 0;
    display: flex;
@@ -155,6 +181,8 @@ a:hover {
    gap: 0.3rem;
    /* transform: rotate(90deg); */
 }
+
+
 
 .selected {
    border: 4px solid blue;
