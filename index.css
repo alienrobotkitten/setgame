@@ -8,10 +8,12 @@
    margin: 0;
    padding: 0;
    --purple: purple;
-   --green: green;
+   --darkpurple: rgb(65, 1, 65);
+   --green: rgb(10, 171, 10);
    --red: red;
    --background-color: #278b3d5f;
-   --text-color: whitesmoke;
+   --light-text-color: whitesmoke;
+   --dark-text-color: var(--darkpurple);
    /* border: 1px solid red; */
 }
 
@@ -28,7 +30,7 @@ html {
 
 body {
    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-   color: var(--text-color);
+   color: var(--light-text-color);
    background-color: var(--background-color);
    font-size: 1rem;
    display: flex;
@@ -43,7 +45,7 @@ header {
    align-items: top;
    margin: 0;
    background-color: purple;
-   box-shadow: 0 2px 5px rgb(0, 0, 0);
+   box-shadow: 0 2px 5px var(--darkpurple);
    padding-bottom: 0;
    color: whitesmoke;
 }
@@ -145,7 +147,7 @@ a {
 a:focus,
 a:active,
 a:hover {
-   color: chocolate;
+   color: purple;
    opacity: 0.9;
 }
 
@@ -165,7 +167,7 @@ a:hover {
 .card {
    border-radius: 5px;
    background-color: whitesmoke;
-   box-shadow: 0px 0px 2px darkslateblue;
+   box-shadow: 0px 0px 2px var(--darkpurple);
    font-size: 4vh;
    display: flex;
    justify-self: center;
@@ -213,31 +215,63 @@ a:hover {
    color: var(--purple);
 }
 
-
-/* footer */
-
-footer {
-   vertical-align: bottom;
-   padding-bottom: 1vh;
-   padding-left: 2vw;
-   padding-right: 1vw;
+.dark-purple {
+   color: var(--darkpurple);
 }
 
-#created-by {
-   opacity: 0.8;
-   font-size: 0.7rem;
-   position: relative;
-   display: flex;
-   justify-content: space-between;
-   align-items: end;
-}
 
-#created-by p {
-   margin-bottom: 0.2rem
-}
-
-#logo {
+#alienrobotkitten-icon {
    vertical-align: bottom;
    height: 2rem;
    font-size: 0.7rem;
+   margin-bottom: 0.5rem;
+}
+
+.popup {
+   background-color: whitesmoke;
+   font-size: 1.2rem;
+   color: purple;
+   padding: 5vh 5vw;
+   opacity: 95%;
+   height: clamp(300px, 75vh, 500px);
+   width: clamp(200px, 75vw, 500px);
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   translate: -50% -50%;
+   z-index: 50;
+   border: 15px solid purple;
+   box-shadow: 0 0 5px var(--darkpurple);
+}
+
+.popup h2 {
+   margin-bottom: 0.5em;
+}
+
+.popup p {
+   margin-top: 0.5rem;
+   color: var(--darkpurple);
+}
+
+.popup-close-button {
+   z-index: 60;
+   border-radius: 8px;
+   border: none;
+   color: whitesmoke;
+   background-color: purple;
+   padding: 1vh 1vw;
+   margin: 0;
+   font-size: 1.5rem;
+   width: 4em;
+   font-weight: bold;
+   position: absolute;
+   bottom: 1em;
+   left: 50%;
+   translate: -2em;
+   cursor: pointer;
+}
+
+.popup::backdrop {
+   background-color: lightgray;
+   opacity: 60%;
 }

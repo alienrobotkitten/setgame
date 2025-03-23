@@ -119,6 +119,29 @@ document.getElementById("hint").addEventListener("click", function () {
   }
 });
 
+document.getElementById("help").addEventListener("click", () => {
+  console.log("showing help")
+  document.getElementById("menu-container").classList.remove("open");
+  document.getElementById("help-popup").showModal();
+});
+
+document.getElementById("close-help-popup").addEventListener("click", function () {
+  console.log("closing help")
+  document.getElementById("help-popup").close();
+})
+
+document.getElementById("stats").addEventListener("click", () => {
+  console.log("showing stats")
+  document.getElementById("menu-container").classList.remove("open");
+  document.getElementById("stats-popup").showModal();
+});
+
+document.getElementById("close-stats-popup").addEventListener("click", function () {
+  console.log("closing stats")
+  document.getElementById("stats-popup").close();
+})
+
+
 function renderPage() {
   let html = "";
   for (let [_, value] of Object.entries(cardsOnTable)) {
