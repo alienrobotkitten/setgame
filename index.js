@@ -183,11 +183,15 @@ function clickHandler(e) {
       document.getElementById(id2).classList.add("right")
       setTimeout(() => {
         selected = []
-        cardsOnTable.splice(cardsOnTable.indexOf(card1), 1)
-        cardsOnTable.splice(cardsOnTable.indexOf(card2), 1)
-        cardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
-        if (cards.length > 0 && cardsOnTable.length < 12) {
-          deal(3);
+        if (cards.length > 0 && cardsOnTable.length <= 12) {
+          console.log("Refilling...")
+          cardsOnTable.splice(cardsOnTable.indexOf(card1), 1, drawCard())
+          cardsOnTable.splice(cardsOnTable.indexOf(card2), 1, drawCard())
+          cardsOnTable.splice(cardsOnTable.indexOf(card3), 1, drawCard())
+        } else {
+          cardsOnTable.splice(cardsOnTable.indexOf(card1), 1)
+          cardsOnTable.splice(cardsOnTable.indexOf(card2), 1)
+          cardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
         }
         save();
         renderPage();
