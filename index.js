@@ -77,7 +77,7 @@ document.getElementById("menu-button").addEventListener("click", toggleMenu);
 
 function toggleMenu() {
   console.log("menyklick")
-  let x = document.getElementById("menu");
+  let x = document.getElementById("menu-container");
   x.classList.toggle("open");
 }
 
