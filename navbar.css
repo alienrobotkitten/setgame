@@ -51,7 +51,7 @@ nav {
    padding-left: 1rem;
    width: 100%;
    padding-top: 0.5rem;
-   padding-bottom: 0.5rem
+   padding-bottom: 1rem;
 }
 
 /* Add a grey background color on mouse-over */
@@ -70,4 +70,9 @@ nav {
    text-align: center;
    font-size: 0.7rem;
    margin: 1rem;
+}
+
+hr {
+   margin-top: 0.5rem;
+   margin-bottom: 1rem;
 }

@@ -24,6 +24,7 @@ let cardsOnTable;
 let selected;
 let score;
 let highscore;
+let availableSets;
 load();
 save();
 renderPage();
@@ -87,6 +88,7 @@ function reset() {
   selected = [];
   cardsOnTable = [];
   deal(12);
+  availableSets = findAllSets();
 }
 
 document.getElementById("new-game").addEventListener("click", function () {
@@ -100,6 +102,21 @@ document.getElementById("deal-more").addEventListener("click", function () {
   toggleMenu();
   deal(3);
   renderPage();
+});
+
+document.getElementById("hint").addEventListener("click", function () {
+  toggleMenu();
+  if (availableSets.length > 0) {
+    let randomSet = Math.floor(Math.random() * availableSets.length);
+    console.log("Random set:", availableSets[randomSet]);
+    let randomCard = Math.floor(Math.random() * 2);
+    let cardIndex = availableSets[randomSet][randomCard];
+    console.log("Random card of that set:", cardIndex);
+    let cardId = cardsOnTable[cardIndex].id;
+    selected = [cardId];
+    renderPage();
+    save();
+  }
 });
 
 function renderPage() {
@@ -126,6 +143,7 @@ function renderPage() {
 
 function findAllSets() {
   let foundSets = 0;
+  availableSets = [];
   const availableCards = cardsOnTable.length;
   console.log("Finding all possible sets...")
   for (let i = 0; i < availableCards; i++) {
@@ -136,7 +154,8 @@ function findAllSets() {
             cardsOnTable[j],
             cardsOnTable[k])) {
             foundSets++;
-            console.log(i, j, k)
+            console.log(i, j, k);
+            availableSets.push([i, j, k]);
           }
         }
       }
@@ -193,6 +212,7 @@ function clickHandler(e) {
           cardsOnTable.splice(cardsOnTable.indexOf(card2), 1)
           cardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
         }
+        findAllSets();
         save();
         renderPage();
       }, 1000)
