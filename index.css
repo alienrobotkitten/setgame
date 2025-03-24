@@ -44,7 +44,7 @@ header {
    grid-template-columns: 1fr 1fr 1fr;
    align-items: top;
    margin: 0;
-   background-color: purple;
+   background-color: var(--purple);
    box-shadow: 0 2px 5px var(--darkpurple);
    padding-bottom: 0;
    color: whitesmoke;
@@ -147,7 +147,7 @@ a {
 a:focus,
 a:active,
 a:hover {
-   color: purple;
+   color: var(--purple);
    opacity: 0.9;
 }
 
@@ -192,15 +192,15 @@ a:hover {
 }
 
 .selected {
-   border: 4px solid blue;
+   border: 4px solid var(--purple);
 }
 
 .wrong {
-   border: 4px solid red;
+   border: 4px solid var(--red);
 }
 
 .right {
-   border: 4px solid rgb(10, 171, 10);
+   border: 4px solid var(--green);
 }
 
 .red {
@@ -230,7 +230,7 @@ a:hover {
 .popup {
    background-color: whitesmoke;
    font-size: 1.2rem;
-   color: purple;
+   color: var(--purple);
    padding: 5vh 5vw;
    opacity: 95%;
    height: clamp(300px, 75vh, 500px);
@@ -240,7 +240,7 @@ a:hover {
    left: 50%;
    translate: -50% -50%;
    z-index: 50;
-   border: 15px solid purple;
+   border: 15px solid var(--purple);
    box-shadow: 0 0 5px var(--darkpurple);
 }
 
@@ -258,7 +258,7 @@ a:hover {
    border-radius: 8px;
    border: none;
    color: whitesmoke;
-   background-color: purple;
+   background-color: var(--purple);
    padding: 1vh 1vw;
    margin: 0;
    font-size: 1.5rem;
