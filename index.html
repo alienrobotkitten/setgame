@@ -17,6 +17,7 @@
   <title>Kombo!</title>
   <link rel="stylesheet" href="navbar.css">
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="zindex.css">
 </head>
 
 <body>
@@ -70,14 +71,16 @@
     </div>
 
     <dialog id="help-popup" class="popup">
-      <h2>Regler</h2>
-      <p>Hitta tre kort som utgör en kombo.</p>
-      <p>Varje kort har fyra egenskaper: färg, antal, symbol, och fyllning.</p>
-      <p>För att vara en godkänd kombo måste varje egenskap på alla tre korten vara samma eller helt olika. Exempelvis
-        så måste antingen alla kort ha samma färg, eller så måste det finnas en vardera av lila, röd och grön.</p>
-      <p>Hur många kombos du har hittat och hur många som just nu är möjliga att hitta ser du uppe till höger.</p>
-      <p>Om det inte finns några möjliga kombos kan du lägga ut tre kort till.</p>
-      <p>Lycka till!</p>
+      <div>
+        <h2>Regler</h2>
+        <p>Hitta tre kort som utgör en kombo.</p>
+        <p>Varje kort har fyra egenskaper: färg, antal, symbol, och fyllning.</p>
+        <p>För att vara en godkänd kombo måste varje egenskap på alla tre korten vara samma eller helt olika. Exempelvis
+          så måste antingen alla kort ha samma färg, eller så måste det finnas en vardera av lila, röd och grön.</p>
+          <p>Hur många kombos du har hittat och hur många som just nu är möjliga att hitta ser du uppe till höger.</p>
+          <p>Om det inte finns några möjliga kombos kan du lägga ut tre kort till.</p>
+          <p>Lycka till!</p>
+        </div>
       <button id="close-help-popup" class="popup-close-button" autofocus>OK</button>
     </dialog>
 
@@ -86,6 +89,21 @@
       <p>Ditt highscore: <span id="highscore" class="score-display purple"></span></p>
       <p>Maximalt antal möjliga kombos är 27.</p>
       <button id="close-stats-popup" class="popup-close-button" autofocus>OK</button>
+    </dialog>
+
+    <dialog id="deal-popup" class="popup">
+      <h2>Inga fler kombos!</h2>
+      <p>Vill du lägga ut tre kort till?</p>
+      <button id="close-deal-popup" class="popup-close-button" autofocus>Fler kort</button>
+    </dialog>
+
+    <dialog id="gameover-popup" class="popup">
+      <h2>Inga fler kombos!</h2>
+      <p>Du hittade <span id="gameover-score" class="score-display purple">0</span> kombos.</p>
+      <p>Ditt highscore: <span id="gameover-highscore" class="score-display purple">25</span></p>
+      <p>Maximalt antal möjliga kombos är 27.</p>
+      <p>Vill du spela igen?</p>
+      <button id="close-gameover-popup" class="popup-close-button" autofocus>Nytt spel</button>
     </dialog>
   </main>
 

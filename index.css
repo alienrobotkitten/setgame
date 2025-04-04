@@ -239,7 +239,6 @@ a:hover {
    top: 50%;
    left: 50%;
    translate: -50% -50%;
-   z-index: 50;
    border: 15px solid var(--purple);
    box-shadow: 0 0 5px var(--darkpurple);
 }
@@ -253,16 +252,19 @@ a:hover {
    color: var(--darkpurple);
 }
 
+.popup>div {
+   height: 90%;
+   overflow-y: scroll;
+}
+
 .popup-close-button {
-   z-index: 60;
    border-radius: 8px;
    border: none;
    color: whitesmoke;
    background-color: var(--purple);
-   padding: 1vh 1vw;
+   padding: 1vh 3vw;
    margin: 0;
    font-size: 1.5rem;
-   width: 4em;
    font-weight: bold;
    position: absolute;
    bottom: 1em;
@@ -274,4 +276,8 @@ a:hover {
 .popup::backdrop {
    background-color: lightgray;
    opacity: 60%;
+}
+
+dialog p {
+   margin-bottom: 10px;
 }

@@ -1,0 +1,15 @@
+#menu-button {
+   z-index: 100;
+}
+
+.popup-close-button {
+   z-index: 60;
+}
+
+#menu-container {
+   z-index: 90;
+}
+
+.popup {
+   z-index: 50;
+}
