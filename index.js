@@ -25,11 +25,11 @@ let selected;
 let score;
 let highscore;
 let availableSets;
-await load();
+load();
 renderPage();
 
 
-async function deal(amount) {
+function deal(amount) {
   console.log("Dealing...")
   if (!cardsOnTable) {
     setCardsOnTable(drawCard(amount));
@@ -37,7 +37,7 @@ async function deal(amount) {
   else {
     setCardsOnTable([...cardsOnTable, ...drawCard(amount)]);
   }
-  availableSets = await findAllSets();
+  availableSets = findAllSets();
   console.log("Dealing done.")
 }
 
@@ -73,6 +73,9 @@ function setScore(newScore) {
   score = newScore
   localStorage.setItem("score", score)
   console.log("saving score", score)
+  if (highscore < score) {
+    setHighscore(score);
+  }
 }
 
 function setCards(newCards) {
@@ -87,7 +90,7 @@ function setCardsOnTable(newCardsOnTable) {
   console.log("saving cardsOnTable", cardsOnTable)
 }
 
-async function load() {
+function load() {
   try {
     console.log("Loading...")
     setScore(parseInt(localStorage.getItem("score")) || 0)
@@ -112,20 +115,20 @@ async function load() {
       } else {
         console.log("cardsOnTable not found, creating new deck")
         setCardsOnTable([])
-        await deal(12)
+        deal(12)
       }
     } catch {
       console.log("cardsOnTable not found, creating new deck")
       setCardsOnTable([])
-      await deal(12)
+      deal(12)
     }
     console.log("Loading done.")
   } catch {
     console.log("save data corrupted, resetting...")
-    await reset();
+    reset();
     console.log("Reset done.")
   } finally {
-    availableSets = await findAllSets();
+    availableSets = findAllSets();
   }
 }
 
@@ -141,27 +144,24 @@ function closeMenu() {
   document.getElementById("menu-container").classList.remove("open");
 }
 
-async function reset() {
+function reset() {
   cards = createDeck();
   setScore(0);
   setSelected([]);
   setCardsOnTable([]);
-  await deal(12);
-  availableSets = await findAllSets();
+  deal(12);
+  availableSets = findAllSets();
 }
 
-document.getElementById("new-game").addEventListener("click", async function () {
+// Menu alternatives
+// Three more cards
+document.getElementById("deal-more").addEventListener("click", function () {
   closeMenu();
-  await reset();
+  deal(3);
   renderPage();
 });
 
-document.getElementById("deal-more").addEventListener("click", async function () {
-  closeMenu();
-  await deal(3);
-  renderPage();
-});
-
+// Hint
 document.getElementById("hint").addEventListener("click", function () {
   closeMenu();
   if (availableSets.length > 0) {
@@ -176,10 +176,25 @@ document.getElementById("hint").addEventListener("click", function () {
   }
 });
 
+// New game
+document.getElementById("new-game").addEventListener("click", function () {
+  closeMenu();
+  reset();
+  renderPage();
+});
+
+// Help
 document.getElementById("help").addEventListener("click", () => {
   console.log("showing help")
   document.getElementById("menu-container").classList.remove("open");
   document.getElementById("help-popup").showModal();
+});
+
+// Stats
+document.getElementById("stats").addEventListener("click", () => {
+  console.log("showing stats")
+  document.getElementById("menu-container").classList.remove("open");
+  document.getElementById("stats-popup").showModal();
 });
 
 document.getElementById("close-help-popup").addEventListener("click", function () {
@@ -187,15 +202,15 @@ document.getElementById("close-help-popup").addEventListener("click", function (
   document.getElementById("help-popup").close();
 })
 
-document.getElementById("stats").addEventListener("click", () => {
-  console.log("showing stats")
-  document.getElementById("menu-container").classList.remove("open");
-  document.getElementById("stats-popup").showModal();
-});
-
 document.getElementById("close-stats-popup").addEventListener("click", function () {
   console.log("closing stats")
   document.getElementById("stats-popup").close();
+})
+
+document.getElementById("close-deal-popup").addEventListener("click", function () {
+  deal(3);
+  renderPage();
+  document.getElementById("deal-popup").close();
 })
 
 function showNoMoreSets() {
@@ -203,26 +218,19 @@ function showNoMoreSets() {
   document.getElementById("deal-popup").showModal();
 }
 
-document.getElementById("close-deal-popup").addEventListener("click", async function () {
-  await deal(3);
-  renderPage();
-  document.getElementById("deal-popup").close();
-})
-
-function showGameOver() {
-  console.log("showing gameover");
-  document.getElementById("gameover-score").innerText = score;
-  document.getElementById("gameover-highscore").innerText = highscore;
-  document.getElementById("stats-popup").showModal();
-};
-
-document.getElementById("close-gameover-popup").addEventListener("click", async function () {
+document.getElementById("close-gameover-popup").addEventListener("click", function () {
   console.log("closing gameover");
-  await reset();
+  reset();
   renderPage();
   document.getElementById("gameover-popup").close();
 })
 
+function showGameOver() {
+  console.log("showing gameover");
+  document.getElementById("gameover-popup").showModal();
+  document.getElementById("gameover-score").innerText = score;
+  document.getElementById("gameover-highscore").innerText = highscore;
+};
 
 function renderPage() {
   let html = "";
@@ -252,7 +260,7 @@ function renderPage() {
   }
 }
 
-async function findAllSets() {
+function findAllSets() {
   availableSets = [];
   const availableCards = cardsOnTable.length;
   console.log("Finding all possible sets...")
@@ -275,11 +283,12 @@ async function findAllSets() {
   return availableSets;
 }
 
-async function clickHandler(e) {
+function clickHandler(e) {
   const id = e.target.id || e.target.parentElement.id
   console.log(id)
-  const currentCard = cardsOnTable.filter(item => item.id == id)[0]
-  console.log(currentCard)
+  // const currentCard = cardsOnTable.filter(item => item.id == id)[0]
+  // console.log(currentCard)
+
   if (!selected.includes(id)) {
     document.getElementById(id).classList.add("selected");
     setSelected([...selected, id]);
@@ -287,6 +296,7 @@ async function clickHandler(e) {
     document.getElementById(id).classList.remove("selected");
     setSelected(selected.filter(entry => entry != id));
   }
+
   if (selected.length < 3) {
     console.log(selected)
     renderPage();
@@ -298,19 +308,18 @@ async function clickHandler(e) {
     const card1 = cardsOnTable.filter(card => card.id == id0)[0]
     const card2 = cardsOnTable.filter(card => card.id == id1)[0]
     const card3 = cardsOnTable.filter(card => card.id == id2)[0]
+
     if (isSet(card1, card2, card3)) {
       console.log("Set!")
       setScore(score + 1);
-      if (highscore < score) {
-        setHighscore(score);
-      }
+
       document.getElementById(id0).classList.remove("selected")
       document.getElementById(id0).classList.add("right")
       document.getElementById(id1).classList.remove("selected")
       document.getElementById(id1).classList.add("right")
       document.getElementById(id2).classList.remove("selected")
       document.getElementById(id2).classList.add("right")
-      setTimeout(async () => {
+      setTimeout(() => {
         setSelected([]);
         if (cards.length > 0 && cardsOnTable.length <= 12) {
           console.log("Refilling...")
@@ -326,35 +335,30 @@ async function clickHandler(e) {
           newCardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
           setCardsOnTable(newCardsOnTable);
         }
-        availableSets = await findAllSets();
+        availableSets = findAllSets();
         renderPage();
       }, 1000)
     } else {
       console.log("Not a set!")
-      for (let id of selected) {
-        document.getElementById(id).classList.remove("selected")
-        document.getElementById(id).classList.add("wrong")
-      }
-      setTimeout(() => {
-        for (let id of selected) {
-          document.getElementById(id).classList.remove("wrong")
-        }
-        setSelected([]);
-      }, 1000)
+      unSelectAll();
     }
   } else {
     console.log("You click too fast!");
-    for (let id of selected) {
-      document.getElementById(id).classList.remove("selected")
-      document.getElementById(id).classList.add("wrong")
-    }
-    setTimeout(() => {
-      for (let id of selected) {
-        document.getElementById(id).classList.remove("wrong")
-      }
-      setSelected([]);
-    }, 1000)
+    unSelectAll();
   }
+}
+
+function unSelectAll() {
+  for (let id of selected) {
+    document.getElementById(id).classList.remove("selected")
+    document.getElementById(id).classList.add("wrong")
+  }
+  setTimeout(() => {
+    for (let id of selected) {
+      document.getElementById(id).classList.remove("wrong")
+    }
+    setSelected([]);
+  }, 1000)
 }
 
 
