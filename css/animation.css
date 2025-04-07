@@ -1,0 +1,9 @@
+.newcard {
+   position: absolute;
+   bottom: 0;
+   left: 50%;
+   translate: -50% 0;
+   background-color: purple;
+   transition: transform 1s ease-out, background-color 1s ease-out;
+   transform: rotateY(180deg);
+}

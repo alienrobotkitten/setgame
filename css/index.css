@@ -281,3 +281,13 @@ a:hover {
 dialog p {
    margin-bottom: 10px;
 }
+
+input[type=checkbox],
+input[type=checkbox]:enabled {
+   width: 1.5em;
+   height: 1.5em;
+   margin-right: 0.5em;
+   border: 1px solid var(--purple);
+   cursor: pointer;
+   accent-color: var(--purple);
+}

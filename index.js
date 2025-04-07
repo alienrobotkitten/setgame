@@ -1,4 +1,6 @@
 import { createDeck, isSet, findAllSets } from './scripts/set.js';
+import { myConfetti } from './scripts/confetti.js';
+import { defaultSettings } from './scripts/settings.js';
 
 const stars = {
   empty: `<i class="fa-regular fa-star"></i>`,
@@ -19,9 +21,10 @@ const batteries = {
 let cards;
 let cardsOnTable;
 let selected;
-let score;
-let highscore;
+let score = 0;
+let highscore = 0;
 let availableSets;
+let settings;
 load();
 renderPage();
 
@@ -35,6 +38,7 @@ function deal(amount) {
     setCardsOnTable([...cardsOnTable, ...drawCard(amount)]);
   }
   availableSets = findAllSets(cardsOnTable);
+  setAvailableSets(availableSets);
   console.log("Dealing done.")
 }
 
@@ -61,13 +65,37 @@ function setSelected(newSelected) {
 }
 
 function setHighscore(newHighscore) {
-  highscore = newHighscore
-  localStorage.setItem("highscore", highscore)
-  console.log("saving highscore", highscore)
+  if (newHighscore == null) {
+    console.error("New highscore is null")
+    return;
+  }
+  if (newHighscore < 0) {
+    console.error("New highscore is negative")
+    return;
+  }
+  if (newHighscore == NaN) {
+    console.error("New highscore is NaN")
+    return;
+  }
+  if (newHighscore == undefined) {
+    console.error("New highscore is undefined")
+    return;
+  }
+  if (newHighscore > 0 && newHighscore > highscore) {
+    highscore = newHighscore
+    document.getElementById("highscore").innerText = highscore;
+    localStorage.setItem("highscore", highscore)
+    console.log("saving highscore", highscore)
+  }
 }
 
 function setScore(newScore) {
-  score = newScore
+  if (newScore > 0) {
+    score = newScore
+  } else {
+    score = 0
+  }
+  document.getElementById("score").innerText = score;
   localStorage.setItem("score", score)
   console.log("saving score", score)
   if (highscore < score) {
@@ -77,6 +105,7 @@ function setScore(newScore) {
 
 function setCards(newCards) {
   cards = newCards
+  document.getElementById("amount_cards").innerText = cards.length;
   localStorage.setItem("cards", JSON.stringify(cards))
   console.log("saving cards", cards)
 }
@@ -87,46 +116,100 @@ function setCardsOnTable(newCardsOnTable) {
   console.log("saving cardsOnTable", cardsOnTable)
 }
 
-function load() {
-  try {
-    console.log("Loading...")
-    setScore(parseInt(localStorage.getItem("score")) || 0)
-    console.log("Score", score);
-    setHighscore(parseInt(localStorage.getItem("highscore")) || score)
-    console.log("High score", highscore)
-    setSelected(JSON.parse(localStorage.getItem("selected")) || []);
-    console.log("Selected", selected);
+function setAvailableSets(newAvailableSets) {
+  availableSets = newAvailableSets
+  document.getElementById("amount_sets").innerText = availableSets.length;
+  localStorage.setItem("availableSets", JSON.stringify(availableSets))
+  console.log("saving availableSets", availableSets)
+}
 
-    let tryGetCards;
-    let tryGetCardsOnTable;
-    try {
-      tryGetCards = JSON.parse(localStorage.getItem("cards"))
-      tryGetCardsOnTable = JSON.parse(localStorage.getItem("cardsOnTable"))
-      if (tryGetCards.length > 0) {
-        console.log("cards found in local storage")
-        setCards(tryGetCards);
-      }
-      if (tryGetCardsOnTable.length > 0) {
-        console.log("cardsOnTable found in local storage")
-        setCardsOnTable(tryGetCardsOnTable);
-      } else {
-        console.log("cardsOnTable not found, creating new deck")
-        setCardsOnTable([])
-        deal(12)
-      }
-    } catch {
+function saveSettings(newSettings) {
+  settings = {
+    ...defaultSettings,
+    ...settings,
+    ...newSettings
+  }
+  localStorage.setItem("settings", JSON.stringify(settings))
+  console.log("saving settings", settings)
+}
+
+function setSetting(key, value) {
+  let newSettings = {
+    ...settings,
+    [key]: value
+  }
+  saveSettings(newSettings)
+  console.log("saving setting", key, value)
+}
+
+function getSetting(key) {
+  if (defaultSettings.key == null) {
+    console.error("Setting not found:", key)
+    return null
+  }
+  if (settings.key == null) {
+    let newSettings = {
+      ...settings,
+      [key]: defaultSettings.key
+    }
+    saveSettings(newSettings)
+    return defaultSettings.key
+  }
+}
+
+function load() {
+  console.log("Loading...")
+
+  try {
+    saveSettings(JSON.parse(localStorage.getItem("settings")));
+  } catch (err) {
+    console.log("Settings not found, creating new settings...");
+    console.log(err);
+    saveSettings(defaultSettings);
+  }
+  console.log("Settings", settings);
+
+  setHighscore(parseInt(localStorage.getItem("highscore")))
+  console.log("High score", highscore)
+
+
+
+  try {
+    setSelected(JSON.parse(localStorage.getItem("selected")));
+  } catch (err) {
+    console.err(err);
+    setSelected([]);
+  }
+  console.log("Selected", selected);
+
+  let tryGetCards;
+  let tryGetCardsOnTable;
+  try {
+    tryGetCards = JSON.parse(localStorage.getItem("cards"))
+    tryGetCardsOnTable = JSON.parse(localStorage.getItem("cardsOnTable"))
+    if (tryGetCards.length > 0) {
+      console.log("cards found in local storage")
+      setCards(tryGetCards);
+    }
+    if (tryGetCardsOnTable.length > 0) {
+      console.log("cardsOnTable found in local storage")
+      setCardsOnTable(tryGetCardsOnTable);
+    } else {
       console.log("cardsOnTable not found, creating new deck")
       setCardsOnTable([])
       deal(12)
     }
-    console.log("Loading done.")
   } catch {
-    console.log("save data corrupted, resetting...")
+    console.log("ongoing game data corrupted, resetting...")
     reset();
     console.log("Reset done.")
-  } finally {
-    availableSets = findAllSets(cardsOnTable);
   }
+
+  setScore(parseInt(localStorage.getItem("score")))
+  console.log("Score", score);
+
+  setAvailableSets(findAllSets(cardsOnTable));
+  console.log("Loading done.")
 }
 
 /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
@@ -142,12 +225,12 @@ function closeMenu() {
 }
 
 function reset() {
-  cards = createDeck();
+  setCards(createDeck());
   setScore(0);
   setSelected([]);
   setCardsOnTable([]);
   deal(12);
-  availableSets = findAllSets(cardsOnTable);
+  setAvailableSets(findAllSets(cardsOnTable));
 }
 
 // Menu alternatives
@@ -229,6 +312,34 @@ function showGameOver() {
   document.getElementById("gameover-highscore").innerText = highscore;
 };
 
+document.getElementById("settings").addEventListener("click", function () {
+  closeMenu();
+  console.log("showing settings");
+  document.getElementById("animations-setting-checkbox").checked = settings.animations;
+  document.getElementById("settings-popup").showModal();
+});
+
+document.getElementById("animations-setting-checkbox").addEventListener("change", function () {
+  console.log("animations setting changed", this.checked)
+  setSetting("animations", this.checked);
+});
+
+document.getElementById("close-settings-popup").addEventListener("click", function () {
+  console.log("closing settings")
+  document.getElementById("settings-popup").close();
+});
+
+async function throwConfetti() {
+  if (settings.animations) {
+    console.log("throwing confetti!")
+    myConfetti(0.5, 0.8);
+  }
+  else {
+    console.log("no confetti since animations are turned off")
+  }
+}
+
+
 function renderPage() {
   let html = "";
   for (let [_, value] of Object.entries(cardsOnTable)) {
@@ -245,11 +356,6 @@ function renderPage() {
     document.getElementById(id).classList.add("selected");
   }
 
-  document.getElementById("score").innerText = score;
-  document.getElementById("highscore").innerText = highscore;
-  document.getElementById("amount_sets").innerText = availableSets.length;
-  document.getElementById("amount_cards").innerText = cards.length;
-
   if (availableSets.length == 0 && cards.length == 0) {
     showGameOver();
   } else if (availableSets.length == 0) {
@@ -257,7 +363,7 @@ function renderPage() {
   }
 }
 
-function clickHandler(e) {
+async function clickHandler(e) {
   const id = e.target.id || e.target.parentElement.id;
   console.log(id);
 
@@ -284,7 +390,7 @@ function clickHandler(e) {
     if (isSet(card1, card2, card3)) {
       console.log("Set!");
       setScore(score + 1);
-
+      throwConfetti();
       document.getElementById(id0).classList.remove("selected");
       document.getElementById(id0).classList.add("right");
       document.getElementById(id1).classList.remove("selected");
@@ -295,10 +401,11 @@ function clickHandler(e) {
         setSelected([]);
         if (cards.length > 0 && cardsOnTable.length <= 12) {
           console.log("Refilling...");
+          var newCards = drawCard(3);
           var newCardsOnTable = [...cardsOnTable];
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1, drawCard());
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1, drawCard());
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1, drawCard());
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1, newCards[0]);
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1, newCards[1]);
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1, newCards[2]);
           setCardsOnTable(newCardsOnTable);
         } else {
           var newCardsOnTable = [...cardsOnTable];
@@ -307,9 +414,10 @@ function clickHandler(e) {
           newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1);
           setCardsOnTable(newCardsOnTable);
         }
-        availableSets = findAllSets(cardsOnTable);
+        setAvailableSets(findAllSets(cardsOnTable));
+        console.log("Available sets", availableSets)
         renderPage();
-      }, 1000);
+      }, 2000);
     } else {
       console.log("Not a set!");
       unSelectAll();
