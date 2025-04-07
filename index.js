@@ -324,15 +324,15 @@ function clickHandler(e) {
         if (cards.length > 0 && cardsOnTable.length <= 12) {
           console.log("Refilling...")
           var newCardsOnTable = [...cardsOnTable];
-          newCardsOnTable.splice(cardsOnTable.indexOf(card1), 1, drawCard())
-          newCardsOnTable.splice(cardsOnTable.indexOf(card2), 1, drawCard())
-          newCardsOnTable.splice(cardsOnTable.indexOf(card3), 1, drawCard())
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1, drawCard())
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1, drawCard())
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1, drawCard())
           setCardsOnTable(newCardsOnTable);
         } else {
           var newCardsOnTable = [...cardsOnTable]
-          newCardsOnTable.splice(cardsOnTable.indexOf(card1), 1)
-          newCardsOnTable.splice(cardsOnTable.indexOf(card2), 1)
-          newCardsOnTable.splice(cardsOnTable.indexOf(card3), 1)
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1)
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1)
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1)
           setCardsOnTable(newCardsOnTable);
         }
         availableSets = findAllSets();
