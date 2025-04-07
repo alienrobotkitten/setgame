@@ -1,3 +1,5 @@
+import { createDeck, isSet, findAllSets } from './scripts/set.js';
+
 const stars = {
   empty: `<i class="fa-regular fa-star"></i>`,
   full: `<i class="fa-solid fa-star"></i>`,
@@ -13,11 +15,6 @@ const batteries = {
   half: `<i class="fa-solid fa-battery-half"></i>`,
   empty: `<i class="fa-solid fa-battery-empty"></i>`
 }
-
-const colors = ["red", "green", "purple"];
-const fills = ["full", "half", "empty"];
-const symbols = { star: stars, circle: circles, battery: batteries };
-const amount = [1, 2, 3];
 
 let cards;
 let cardsOnTable;
@@ -37,7 +34,7 @@ function deal(amount) {
   else {
     setCardsOnTable([...cardsOnTable, ...drawCard(amount)]);
   }
-  availableSets = findAllSets();
+  availableSets = findAllSets(cardsOnTable);
   console.log("Dealing done.")
 }
 
@@ -128,7 +125,7 @@ function load() {
     reset();
     console.log("Reset done.")
   } finally {
-    availableSets = findAllSets();
+    availableSets = findAllSets(cardsOnTable);
   }
 }
 
@@ -150,7 +147,7 @@ function reset() {
   setSelected([]);
   setCardsOnTable([]);
   deal(12);
-  availableSets = findAllSets();
+  availableSets = findAllSets(cardsOnTable);
 }
 
 // Menu alternatives
@@ -260,34 +257,9 @@ function renderPage() {
   }
 }
 
-function findAllSets() {
-  availableSets = [];
-  const availableCards = cardsOnTable.length;
-  console.log("Finding all possible sets...")
-  for (let i = 0; i < availableCards; i++) {
-    for (let j = i + 1; j < availableCards; j++) {
-      for (let k = j + 1; k < availableCards; k++) {
-        if (i != j && j != k) {
-          if (isSet(cardsOnTable[i],
-            cardsOnTable[j],
-            cardsOnTable[k])) {
-            console.log(i, j, k);
-            availableSets.push([i, j, k]);
-          }
-        }
-      }
-    }
-  }
-
-  console.log(`${availableSets.length} possible sets.`)
-  return availableSets;
-}
-
 function clickHandler(e) {
-  const id = e.target.id || e.target.parentElement.id
-  console.log(id)
-  // const currentCard = cardsOnTable.filter(item => item.id == id)[0]
-  // console.log(currentCard)
+  const id = e.target.id || e.target.parentElement.id;
+  console.log(id);
 
   if (!selected.includes(id)) {
     document.getElementById(id).classList.add("selected");
@@ -298,48 +270,48 @@ function clickHandler(e) {
   }
 
   if (selected.length < 3) {
-    console.log(selected)
+    console.log(selected);
     renderPage();
   }
   else if (selected.length == 3) {
-    const id0 = selected[0]
-    const id1 = selected[1]
-    const id2 = selected[2]
-    const card1 = cardsOnTable.filter(card => card.id == id0)[0]
-    const card2 = cardsOnTable.filter(card => card.id == id1)[0]
-    const card3 = cardsOnTable.filter(card => card.id == id2)[0]
+    const id0 = selected[0];
+    const id1 = selected[1];
+    const id2 = selected[2];
+    const card1 = cardsOnTable.filter(card => card.id == id0)[0];
+    const card2 = cardsOnTable.filter(card => card.id == id1)[0];
+    const card3 = cardsOnTable.filter(card => card.id == id2)[0];
 
     if (isSet(card1, card2, card3)) {
-      console.log("Set!")
+      console.log("Set!");
       setScore(score + 1);
 
-      document.getElementById(id0).classList.remove("selected")
-      document.getElementById(id0).classList.add("right")
-      document.getElementById(id1).classList.remove("selected")
-      document.getElementById(id1).classList.add("right")
-      document.getElementById(id2).classList.remove("selected")
-      document.getElementById(id2).classList.add("right")
+      document.getElementById(id0).classList.remove("selected");
+      document.getElementById(id0).classList.add("right");
+      document.getElementById(id1).classList.remove("selected");
+      document.getElementById(id1).classList.add("right");
+      document.getElementById(id2).classList.remove("selected");
+      document.getElementById(id2).classList.add("right");
       setTimeout(() => {
         setSelected([]);
         if (cards.length > 0 && cardsOnTable.length <= 12) {
-          console.log("Refilling...")
+          console.log("Refilling...");
           var newCardsOnTable = [...cardsOnTable];
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1, drawCard())
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1, drawCard())
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1, drawCard())
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1, drawCard());
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1, drawCard());
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1, drawCard());
           setCardsOnTable(newCardsOnTable);
         } else {
-          var newCardsOnTable = [...cardsOnTable]
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1)
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1)
-          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1)
+          var newCardsOnTable = [...cardsOnTable];
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card1), 1);
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card2), 1);
+          newCardsOnTable.splice(newCardsOnTable.indexOf(card3), 1);
           setCardsOnTable(newCardsOnTable);
         }
-        availableSets = findAllSets();
+        availableSets = findAllSets(cardsOnTable);
         renderPage();
-      }, 1000)
+      }, 1000);
     } else {
-      console.log("Not a set!")
+      console.log("Not a set!");
       unSelectAll();
     }
   } else {
@@ -350,85 +322,29 @@ function clickHandler(e) {
 
 function unSelectAll() {
   for (let id of selected) {
-    document.getElementById(id).classList.remove("selected")
-    document.getElementById(id).classList.add("wrong")
+    document.getElementById(id).classList.remove("selected");
+    document.getElementById(id).classList.add("wrong");
   }
   setTimeout(() => {
     for (let id of selected) {
-      document.getElementById(id).classList.remove("wrong")
+      document.getElementById(id).classList.remove("wrong");
     }
     setSelected([]);
-  }, 1000)
-}
-
-
-function isSet(card1, card2, card3) {
-  if (
-    (
-      allSame(card1.amount, card2.amount, card3.amount)
-      || allDifferent(card1.amount, card2.amount, card3.amount)
-    ) && (
-      allSame(card1.fill, card2.fill, card3.fill)
-      || allDifferent(card1.fill, card2.fill, card3.fill)
-    ) && (
-      allSame(card1.symbol, card2.symbol, card3.symbol)
-      || allDifferent(card1.symbol, card2.symbol, card3.symbol)
-    ) && (
-      allSame(card1.color, card2.color, card3.color)
-      || allDifferent(card1.color, card2.color, card3.color)
-    )
-  ) {
-    return true
-  } else {
-    return false
-  }
-}
-
-function allSame(card1, card2, card3) {
-  return card1 === card2 && card2 === card3
-}
-
-function allDifferent(card1, card2, card3) {
-  return card1 != card2 && card2 != card3 && card1 != card3
-}
-
-
-
-function createDeck() {
-  let cards = [];
-  let index = 0;
-  for (let i of amount) {
-    for (let color of colors) {
-      for (let fill of fills) {
-        for (let key in symbols) {
-          cards.push({
-            id: index,
-            amount: i,
-            color: color,
-            symbol: key,
-            fill: fill,
-            symbolsArray: symbols[key],
-          });
-          index++;
-        }
-      }
-    }
-  }
-  shuffle(cards);
-  return cards;
-}
-
-function shuffle(cardsArray) {
-  for (let i = 0; i < 200; i++) {
-    const randomIndex1 = Math.floor(Math.random() * cardsArray.length);
-    const randomIndex2 = Math.floor(Math.random() * cardsArray.length);
-    const temp = cardsArray[randomIndex1];
-    cardsArray[randomIndex1] = cardsArray[randomIndex2];
-    cardsArray[randomIndex2] = temp;
-  }
+  }, 1000);
 }
 
 function renderCard(card) {
+  var symbolsArray;
+  if (card.symbol == "star") {
+    symbolsArray = stars;
+  } else if (card.symbol == "circle") {
+    symbolsArray = circles;
+  } else if (card.symbol == "battery") {
+    symbolsArray = batteries;
+  } else {
+    console.error("Unknown symbol type:", card.symbol);
+    return "";
+  }
   return `<button class="card ${card.color}"
     id=${card.id}
     data-symbol=${card.symbol} 
@@ -436,7 +352,7 @@ function renderCard(card) {
     data-fill=${card.fill}
     data-color=${card.color}
     >
-      ${card.symbolsArray[card.fill].repeat(card.amount)}
+      ${symbolsArray[card.fill].repeat(card.amount)}
     </button>`;
 }
 
