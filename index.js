@@ -20,14 +20,13 @@ const batteries = {
 
 let cards;
 let cardsOnTable;
-let selected;
+let selected = [];
+let selectedCards = [];
 let score = 0;
 let highscore = 0;
-let availableSets;
-let settings;
+let availableSets = [];
+let settings = defaultSettings;
 load();
-renderPage();
-
 
 function deal(amount) {
   console.log("Dealing...")
@@ -172,8 +171,6 @@ function load() {
   setHighscore(parseInt(localStorage.getItem("highscore")))
   console.log("High score", highscore)
 
-
-
   try {
     setSelected(JSON.parse(localStorage.getItem("selected")));
   } catch (err) {
@@ -201,7 +198,7 @@ function load() {
     }
   } catch {
     console.log("ongoing game data corrupted, resetting...")
-    reset();
+    initializeGame();
     console.log("Reset done.")
   }
 
@@ -210,6 +207,8 @@ function load() {
 
   setAvailableSets(findAllSets(cardsOnTable));
   console.log("Loading done.")
+
+  renderPage();
 }
 
 /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
@@ -217,14 +216,14 @@ document.getElementById("menu-button").addEventListener("click", toggleMenu);
 
 function toggleMenu() {
   console.log("menyklick")
-  let x = document.getElementById("menu-container").classList.toggle("open");
+  document.getElementById("menu-container").classList.toggle("open");
 }
 
 function closeMenu() {
   document.getElementById("menu-container").classList.remove("open");
 }
 
-function reset() {
+function initializeGame() {
   setCards(createDeck());
   setScore(0);
   setSelected([]);
@@ -259,7 +258,7 @@ document.getElementById("hint").addEventListener("click", function () {
 // New game
 document.getElementById("new-game").addEventListener("click", function () {
   closeMenu();
-  reset();
+  initializeGame();
   renderPage();
 });
 
@@ -300,7 +299,7 @@ function showNoMoreSets() {
 
 document.getElementById("close-gameover-popup").addEventListener("click", function () {
   console.log("closing gameover");
-  reset();
+  initializeGame();
   renderPage();
   document.getElementById("gameover-popup").close();
 })
@@ -339,7 +338,6 @@ async function throwConfetti() {
   }
 }
 
-
 function renderPage() {
   let html = "";
   for (let [_, value] of Object.entries(cardsOnTable)) {
@@ -367,19 +365,18 @@ async function clickHandler(e) {
   const id = e.target.id || e.target.parentElement.id;
   console.log(id);
 
-  if (!selected.includes(id)) {
-    document.getElementById(id).classList.add("selected");
-    setSelected([...selected, id]);
-  } else {
-    document.getElementById(id).classList.remove("selected");
+  if (selected.includes(id)) {
     setSelected(selected.filter(entry => entry != id));
-  }
-
-  if (selected.length < 3) {
+    document.getElementById(id).classList.remove("selected");
     console.log(selected);
-    renderPage();
+  } else if (!selected.includes(id) && selected.length < 2) {
+    setSelected([...selected, id]);
+    document.getElementById(id).classList.add("selected");
+    console.log(selected);
   }
-  else if (selected.length == 3) {
+  else if (!selected.includes(id) && selected.length == 2) {
+    setSelected([...selected, id]);
+    document.getElementById(id).classList.add("selected");
     const id0 = selected[0];
     const id1 = selected[1];
     const id2 = selected[2];
@@ -422,7 +419,8 @@ async function clickHandler(e) {
       console.log("Not a set!");
       unSelectAll();
     }
-  } else {
+  }
+  if (selected.length > 3) {
     console.log("You click too fast!");
     unSelectAll();
   }
